@@ -44,9 +44,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: torikki/team_418:latest
     environment:
       XUI_LOGIN: ${XUI_LOGIN}
       XUI_PASS: ${XUI_PASS}
