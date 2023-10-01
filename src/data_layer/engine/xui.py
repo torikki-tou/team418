@@ -8,7 +8,7 @@ import uuid
 class XUICli:
     def __init__(self):
         self.client: XUI = (XUI(
-            full_address='https://testnamehost.ddns.net:54321',
+            full_address=os.environ['XUI_URL'],
             panel='sanaei'
         ))
         self.client.login(
