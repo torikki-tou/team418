@@ -48,7 +48,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      XUI_LOGIN: ${XUI_LOGIN}
-      XUI_PASS: ${XUI_PASS}
-      ADMIN_TELEGRAM_ID: ${ADMIN_IDS}
+      XUI_LOGIN: ${USERNAME}
+      XUI_PASS: ${PASSWORD}
+      ADMIN_TELEGRAM_ID: ${ADMIN_ID}
       TELEGRAM_API_TOKEN: ${TELEGRAM_API_TOKEN}
