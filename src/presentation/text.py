@@ -12,7 +12,7 @@ hello_clint = """
 """
 
 instructions = """
-вставить ссылки на инструкции
+Выберите операционную систему
 """
 
 client_id_await = """
@@ -72,4 +72,24 @@ config_list = """
 
 configs_not_found = """
 Конфигурации не найдены
+"""
+
+user_is_created = """
+Пользователь добавлен!
+"""
+
+instruction_ios = """
+Ссылка на инструкцию для iOS
+"""
+
+instruction_android = """
+Ссылка на инструкцию для Android
+"""
+
+instruction_macos = """
+Ссылка на инструкцию для MacOS
+"""
+
+instruction_windows = """
+Ссылка на инструкцию для Windows
 """
