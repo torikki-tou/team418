@@ -58,7 +58,7 @@ async def get_telegram_id(msg: Message, state: FSMContext):
 
 @router.message(Gen.typing_limit)
 async def get_limit(msg: Message, state: FSMContext):
-    if msg.from_user.username == admin_id:
+    if msg.from_user.id == admin_id:
         limit = msg.text
         if not limit.isnumeric():
             await state.clear()
