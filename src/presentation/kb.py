@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardBu
     ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from src.bussiness_layer import Admin, Client, User
+from src.logic import Admin, Client, User
 
 admin_menu = [
     [InlineKeyboardButton(text="Добавить юзера", callback_data="add_client"),

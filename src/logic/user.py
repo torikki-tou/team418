@@ -1,8 +1,8 @@
 from typing import Optional, List, Dict
 
-from src.data_layer.repo.user import User as UserRepo
-from src.data_layer.repo.clientconfig import ClientConfig as ClientRepo
-from src.bussiness_layer.models.user import User as UserDTO
+from src.data.repo.user import User as UserRepo
+from src.data.repo.clientconfig import ClientConfig as ClientRepo
+from src.logic.models.user import User as UserDTO
 
 
 class User:

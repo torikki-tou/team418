@@ -3,15 +3,15 @@ import json
 
 from pyxui.config_gen import config_generator
 
-from src.bussiness_layer.models.client import Client as ClientDTO
-from src.data_layer.repo.clientconfig import ClientConfig as ClientRepo
-from src.data_layer.engine.xui import XUICli
+from src.logic.models.client import Client as ClientDTO
+from src.data.repo.clientconfig import ClientConfig as ClientRepo
+from src.data.engine.xui import XUIClient
 
 
 class Client:
     def __init__(self):
         self.client_repo = ClientRepo()
-        self.xui = XUICli()
+        self.xui = XUIClient()
         return
 
     def get_by_user(self, user_id: str) -> List[str]:
@@ -23,7 +23,8 @@ class Client:
         if db_client is None:
             return None
 
-        stream_settings = json.loads(self.xui.get_server()['streamSettings'])
+        stream_settings = json.loads(
+            self.xui.get_server_info()['streamSettings'])
 
         public_key = stream_settings['realitySettings']['settings']['publicKey']
 

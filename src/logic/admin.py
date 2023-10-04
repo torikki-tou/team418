@@ -1,4 +1,4 @@
-from src.data_layer.repo.admin import Admin as AdminRepo
+from src.data.repo.admin import Admin as AdminRepo
 
 
 class Admin:

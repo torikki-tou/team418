@@ -14,8 +14,8 @@ read -p "Enter your hostname:" hostname_input
 read -p "Enter your e-mail for certificate:" email_input
 read -p "Enter your Telegram bot API token:" tgtoken_input
 
-export USERNAME=$usernameTemp
-export PASSWORD=$passwordTemp
+export XUI_USERNAME=$usernameTemp
+export XUI_PASSWORD=$passwordTemp
 export CONFIG_PORT=$config_port
 export HOSTNAME=$hostname_input
 export EMAIL=$email_input

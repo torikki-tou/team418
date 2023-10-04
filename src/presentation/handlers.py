@@ -2,16 +2,16 @@ from os import getenv
 
 from aiogram.filters.callback_data import CallbackData
 
-from src.bussiness_layer import Admin, Client, User
+from src.logic import Admin, Client, User
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram import flags
 
-import src.presentation_layer.kb as kb
-import src.presentation_layer.text as text
-from src.presentation_layer.states import Gen, Del, GenConf, DelConf
+import src.presentation.kb as kb
+import src.presentation.text as text
+from src.presentation.states import Gen, Del, GenConf, DelConf
 
 router = Router()
 admin_id = getenv("ADMIN_TELEGRAM_ID")

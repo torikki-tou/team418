@@ -6,14 +6,12 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from src.presentation_layer.handlers import router
+from src.presentation.handlers import router
+from src.infrastracture.config import config
 
 
 async def main() -> None:
-    API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
-    # And the run events dispatching
+    bot = Bot(token=config.get_telegram_api_token(), parse_mode=ParseMode.HTML)
     dp = Dispatcher(storage=MemoryStorage())
     dp.include_router(router)
     await dp.start_polling(bot)
