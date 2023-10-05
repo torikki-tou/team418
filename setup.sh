@@ -64,14 +64,14 @@ function check_inbounds_table() {
             read -p "The 'inbounds' table already exists. Do you want to proceed with the execution of inbounds_gen.sh? (y/n): " response
             if [[ $response == "y" ]]; then
                 ./inbounds_gen.sh
-				sqlite3 $db_path < inbounds.sql
-				echo -e "Added XTLS-Reality config entry into x-ui.db database"
+		sqlite3 $db_path < inbounds.sql
+		echo -e "Added XTLS-Reality config entry into x-ui.db database"
             else
                 echo "Skipping execution of inbounds_gen.sh."
             fi
         else
             ./inbounds_gen.sh
-			sqlite3 $db_path < inbounds.sql
+	    sqlite3 $db_path < inbounds.sql
         fi
     else
         echo "x-ui.db does not exist in $db_path. Proceeding with the rest of the setup."
