@@ -1,19 +1,28 @@
 #!/bin/bash
 
+#Check if script executed by root
+function isRoot() {
+	if [ "$EUID" -ne 0 ]; then
+		return 1
+	fi
+}
+
+#Check if sqlite3 package is installed
 function check_sqlite3() {
     if ! command -v sqlite3 &> /dev/null; then
-        sudo apt-get update
-        sudo apt-get install -y sqlite3
+        apt-get update
+        apt-get install -y sqlite3
     fi
 }
 
+#Check if uuid-runtime package is installed
 function check_uuidgen() {
     if ! command -v uuidgen &> /dev/null; then
-        sudo apt-get update
-        sudo apt-get install -y uuid-runtime
+        apt-get update
+        apt-get install -y uuid-runtime
     fi
 }
-
+#Check if the docker-ce packages are installed
 function check_docker() {
     packages=(docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin)
     for pkg in "${packages[@]}"; do
@@ -24,37 +33,42 @@ function check_docker() {
     return 0
 }
 
+#Install docker packages from docker.com repo
 function install_docker() {
-    sudo apt-get update
-    sudo apt-get install -y ca-certificates curl gnupg
-    sudo install -m 0755 -d /etc/apt/keyrings
+    apt-get update
+    apt-get install -y ca-certificates curl gnupg
+    install -m 0755 -d /etc/apt/keyrings
     if [[ $(lsb_release -is) == "Debian" ]]; then
-        curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         echo \
           "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
           $(lsb_release -cs) stable" | \
-          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          tee /etc/apt/sources.list.d/docker.list > /dev/null
     elif [[ $(lsb_release -is) == "Ubuntu" ]]; then
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         echo \
           "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
           $(lsb_release -cs) stable" | \
-          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          tee /etc/apt/sources.list.d/docker.list > /dev/null
     else
         echo "Unsupported OS"
         exit 1
     fi
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
-    sudo apt-get update
-    sudo apt-get install -y "${packages[@]}"
+    chmod a+r /etc/apt/keyrings/docker.gpg
+    apt-get update
+    apt-get install -y "${packages[@]}"
+	echo -e "Docker installed"
 }
+
+#Check for unzip package installed
 function check_unzip() {
     if ! command -v unzip &> /dev/null; then
-        sudo apt-get update
-        sudo apt-get install -y unzip
+        apt-get update
+        apt-get install -y unzip
     fi
 }
 
+#Checks if "inbounds" table exists in x-ui.db, and if the inbound_gen script can be executed
 function check_inbounds_table() {
     current_dir=$(pwd)
     db_path="$current_dir/db/x-ui.db"
@@ -78,6 +92,7 @@ function check_inbounds_table() {
     fi
 }
 
+#Check for existing team_418 folder and clones repo (testing) with wget
 function clone_repo() {
     if [[ -d "team_418" ]]; then
         cd team_418 || exit
@@ -89,6 +104,7 @@ function clone_repo() {
         unzip testing.zip
         mv team418-testing/* .
         rm -rf team418-testing testing.zip
+		echo -e "team_418 repo has been cloned"
     else
         wget https://github.com/torikki-tou/team418/archive/refs/heads/testing.zip
         unzip testing.zip
@@ -96,24 +112,39 @@ function clone_repo() {
         mv team418-testing/* team_418/
         cd team_418 || exit
         rm -rf ../team418-testing ../testing.zip
+		echo -e "team_418 repo has been cloned"
     fi
 }
 
+#Check if user is root
+if ! isRoot; then
+    echo "This script must be run as root"
+    exit 1
+fi
 
+#Docker installation with checking for uuid and sqlite packages
+echo -e "Checking for uuidgen package installed...."
 check_uuidgen
+echo -e "Checking for sqlite3 package installed...."
 check_sqlite3
+echo -e "Checking for Docker packages installed...."
 check_docker
 if [[ $? -ne 0 ]]; then
     read -p "Docker components are missing, would you like to install them? (y/n): " response
     if [[ $response == "y" ]]; then
         install_docker
+		echo -e "Docker packages installed..."
     else
         echo "Aborting"
         exit 1
     fi
 fi
 
+#Checks for unzip package
+echo -e "Checking for unzip package installed...."
 check_unzip
+#Clones team418 repo (testing branch)
+echo -e "Cloning team_418 repo (testing branch)..."
 clone_repo
 chmod +x inbounds_gen.sh
 echo -e "
@@ -132,20 +163,32 @@ read -p "Enter your e-mail for certificate :" email_input
 read -p "Enter your Telegram bot API token (use Tg BotFather):" tgtoken_input
 read -p "Enter your Telegram admin profile (as @admin without @):" tgadminid_input
 
-export USERNAME=$usernameTemp
-export PASSWORD=$passwordTemp
-export CONFIG_PORT=$config_port
-export HOSTNAME=$hostname_input
-export EMAIL=$email_input
+#Export variables to docker-compose
+export XUI_USERNAME=$usernameTemp
+export XUI_PASSWORD=$passwordTemp
+export XUI_PANEL_PORT=$config_port
+export XUI_HOSTNAME=$hostname_input
+export XUI_EMAIL=$email_input
 export TGTOKEN=$tgtoken_input
 export ADMINID=$tgadminid_input
 
+#Export variables to .env file
+echo "XUI_USERNAME=$XUI_USERNAME" > .env
+echo "XUI_PASSWORD=$XUI_PASSWORD" >> .env
+echo "XUI_PANEL_PORT=$XUI_PANEL_PORT" >> .env
+echo "XUI_HOSTNAME=$XUI_HOSTNAME" >> .env
+echo "XUI_EMAIL=$XUI_EMAIL" >> .env
+echo "TGTOKEN=$TGTOKEN" >> .env
+echo "ADMINID=$ADMINID" >> .env
+
 docker compose up -d
 docker exec 3x-ui sh -c "/app/x-ui setting -username $usernameTemp -password $passwordTemp"
+echo -e "username and password applied to 3X-UI Container"
 sleep 1
 docker restart 3x-ui
+echo -e "3X-UI Docker container restarted"
 sleep 3
-
+#Adds default config for XTLS-Reality into x-ui.db if conditions met (prompt y/n)
 check_inbounds_table
 
 docker restart 3x-ui
