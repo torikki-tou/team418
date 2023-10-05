@@ -90,6 +90,3 @@ INSERT INTO "inbounds" VALUES (1,1,0,0,0,'',1,0,'',443,'vless','{
 COMMIT;
 EOF
 
-#Move inbounds table to x-ui.db
-sqlite3 ~/team418/db/x-ui.db < inbounds.sql
-echo -e "Added XTLS-Reality config entry into x-ui.db database"
