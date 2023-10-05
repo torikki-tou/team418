@@ -43,10 +43,13 @@ function install_docker() {
 }
 
 function clone_repo() {
-    if [[ ! -d "team_418" ]]; then
-        git clone https://github.com/torikki-tou/team_418.git
+    if [[ -d "team_418" ]]; then
+        cd team_418 || exit
+        git pull origin testing
+    else
+        git clone -b testing https://github.com/torikki-tou/team_418.git
+        cd team_418 || exit
     fi
-    cd team_418 || exit
 }
 
 check_uuidgen
