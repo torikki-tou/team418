@@ -116,7 +116,7 @@ function clone_repo() {
     fi
 }
 
-#Check if user is root
+#Check if user is root, halt if not
 if ! isRoot; then
     echo "This script must be run as root"
     exit 1
