@@ -67,4 +67,7 @@ services:
       XUI_PASS: ${XUI_PASSWORD}
       ADMIN_TELEGRAM_ID: ${ADMINID}
       TELEGRAM_API_TOKEN: ${TGTOKEN}
+      XUI_HOSTNAME: ${XUI_HOSTNAME}
       XUI_URL: "http://3x-ui:2053"
+    volumes:
+      - "$PWD/db/:/db/"

@@ -42,6 +42,12 @@ class EnvConfig:
 
         return self.__engine_url
 
+    def get_server_hostname(self, refresh: bool = False) -> str:
+        if refresh:
+            self.__read_server_hostname()
+
+        return self.__server_hostname
+
     def get_engine_username(self, refresh: bool = False) -> str:
         if refresh:
             self.__read_engine_username()
@@ -72,6 +78,10 @@ class EnvConfig:
     def __read_engine_url(self):
         self.__engine_url: str = (os.environ.get('XUI_URL')
                                   or 'http://3x-ui:2053')
+
+    def __read_server_hostname(self):
+        self.__server_hostname: str = (os.environ.get('XUI_HOSTNAME')
+                                       or '0.0.0.0')
 
     def __read_engine_username(self):
         self.__engine_username: str = os.environ.get('XUI_LOGIN') or 'admin'

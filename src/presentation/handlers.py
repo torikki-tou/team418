@@ -83,12 +83,8 @@ async def add_client(clbck: CallbackQuery, state: FSMContext):
 async def delete_telegram_id(msg: Message, state: FSMContext):
     if msg.from_user.username == admin_id:
         tg_id = msg.text
-        if not tg_id.isnumeric() or len(tg_id) != 9:
-            await state.clear()
-            return await msg.answer(text.telegram_id_error, reply_markup=kb.iexit_kb)
-        else:
-            User().delete(user_id=tg_id)
-            await state.clear()
+        User().delete(user_id=tg_id)
+        await state.clear()
 
 
 @router.callback_query(F.data == "create_config")

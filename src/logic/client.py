@@ -6,6 +6,7 @@ from pyxui.config_gen import config_generator
 from src.logic.models.client import Client as ClientDTO
 from src.data.repo.clientconfig import ClientConfig as ClientRepo
 from src.data.engine.xui import XUIClient
+from src.infrastracture.config import config
 
 
 class Client:
@@ -26,26 +27,26 @@ class Client:
         stream_settings = json.loads(
             self.xui.get_server_info()['streamSettings'])
 
-        public_key = stream_settings['realitySettings']['settings']['publicKey']
+        settings = stream_settings['realitySettings']['settings']
 
-        config = {
+        client_config = {
             "ps": db_client.id,
-            "add": "testnamehost.ddns.net",
+            "add": config.get_server_hostname(),
             "port": "443",
             "id": db_client.id
         }
 
-        data = {
-            "pbk": public_key,
+        client_data = {
+            "pbk": settings['publicKey'],
             "security": "reality",
             "type": "tcp",
-            "sni": "yahoo.com",
+            "sni": "dl.google.com",
             "spx": "/",
             "sid": "deced1f3",
             "fp": "firefox"
         }
 
-        conn_str = config_generator("vless", config, data)
+        conn_str = config_generator("vless", client_config, client_data)
 
         return ClientDTO(**{'id': db_client.id, 'conn_str': conn_str})
 
