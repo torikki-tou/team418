@@ -40,8 +40,16 @@ services:
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=${XUI_EMAIL}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    labels:
+      # Middleware for HTTP to HTTPS redirection
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.port=${XUI_PANEL_PORT}"
+      # Apply middleware to the main router for HTTP
+      - "traefik.http.routers.redirect.rule=Host(`${XUI_HOSTNAME}`)"
+      - "traefik.http.routers.redirect.entrypoints=web"
+      - "traefik.http.routers.redirect.middlewares=redirect-to-https"
     ports:
-      - "80:80"
       - "${XUI_PANEL_PORT}:20657"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
