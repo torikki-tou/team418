@@ -57,7 +57,7 @@ function install_docker() {
     chmod a+r /etc/apt/keyrings/docker.gpg
     apt-get update
     apt-get install -y "${packages[@]}"
-	echo -e "Docker installed"
+	echo -e "Docker packages were installed"
 }
 
 #Check for unzip package installed
