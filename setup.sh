@@ -147,13 +147,44 @@ check_unzip
 echo -e "Cloning team_418 repo (testing branch)..."
 clone_repo
 chmod +x inbounds_gen.sh
+
+# Function to check existence of a variable in .env
+function check_variable() {
+    local var_name="$1"
+    if ! grep -q "^$var_name=" .env; then
+        return 1
+    fi
+    return 0
+}
+
+# Function to check for all the variables in .env
+function check_all_variables() {
+    local variables=("XUI_USERNAME" "XUI_PASSWORD" "XUI_PANEL_PORT" "XUI_HOSTNAME" "XUI_EMAIL" "TGTOKEN" "ADMINID")
+    for var in "${variables[@]}"; do
+        if ! check_variable "$var"; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Check if all variables exist in .env
+if check_all_variables; then
+    read -p "Variables already exist in .env. Do you want to reinstall admin panel? (y/n): " response
+    if [[ $response != "y" ]]; then
+        echo "Aborting."
+        exit 0
+    fi
+fi
+
 echo -e "
           _  _   _  ___
          | || | / |( _ )
          | || |_| |/ _ \
          |__   _| | (_) |
-            |_| |_|\___/ "
-echo -e "Welcome to 3X-UI Docker + Traefik + TelegramBot installation script"
+            |_| |_|\___/ 
+			"
+echo -e "\e[32mWelcome to 3X-UI Docker + Traefik + TelegramBot installation script\e[0m"
 
 read -p "Enter username for 3X-UI Panel: " usernameTemp
 read -p "Enter password: " passwordTemp
@@ -192,4 +223,5 @@ sleep 3
 check_inbounds_table
 
 docker restart 3x-ui
-echo -e "3X-UI + Traefik + TelegramBot installation finished, XTLS-Reality default config added, admin panel is available on https://"$hostname_input":"$config_port
+echo -e "\e[32m3X-UI + Traefik + TelegramBot installation finished, XTLS-Reality default config added, admin panel is available on https://$hostname_input:$config_port\e[0m"
+
