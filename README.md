@@ -16,7 +16,7 @@
 
 Скачиваем скрипт, делаем файл исполняемым и запускаем установку:
 
-    curl -sSL https://raw.githubusercontent.com/torikki-tou/team418/testing/setup.sh -o setup.sh && chmod +x setup.sh && ./setup.sh
+    curl -sSL https://raw.githubusercontent.com/torikki-tou/team418/main/setup.sh -o setup.sh && chmod +x setup.sh && ./setup.sh
 
 Скрипт запросит у вас:
 
