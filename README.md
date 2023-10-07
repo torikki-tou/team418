@@ -14,7 +14,7 @@
 
 Официальный репозиторий форка X-UI: [https://github.com/alireza0/x-ui](https://github.com/alireza0/x-ui)
 
-Скачиаввем скрипт, делаем файл исполняемым и запускаем установку:
+Скачиваем скрипт, делаем файл исполняемым и запускаем установку:
 
     curl -sSL https://raw.githubusercontent.com/torikki-tou/team418/testing/setup.sh -o setup.sh && chmod +x setup.sh && ./setup.sh
 
