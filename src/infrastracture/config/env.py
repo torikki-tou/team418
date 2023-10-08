@@ -10,6 +10,7 @@ class EnvConfig:
         self.__read_default_max_configs()
         self.__read_engine_url()
         self.__read_engine_username()
+        self.__read_server_hostname()
         self.__read_engine_password()
 
     def get_telegram_api_token(self, refresh: bool = False) -> str:
