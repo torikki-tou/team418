@@ -16,7 +16,6 @@ from src.presentation.states import Gen, Del, GenConf, DelConf
 router = Router()
 admin_id = getenv("ADMIN_TELEGRAM_ID")
 
-
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
     await state.clear()
@@ -38,13 +37,13 @@ async def menu_handler(clbck: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "get_instructions")
 async def get_instructions(clbck: CallbackQuery):
-    await clbck.message.answer(text=text.instructions, reply_markup=kb.instruction_menu)
+    await clbck.message.answer(text.instructions, reply_markup=kb.iexit_kb)
 
 
 @router.callback_query(F.data == "add_client")
 async def add_client(clbck: CallbackQuery, state: FSMContext):
     if clbck.from_user.username == admin_id:
-        await clbck.message.answer(text=text.client_id_await, reply_markup=kb.iexit_kb)
+        await clbck.message.answer(text.client_id_await, reply_markup=kb.iexit_kb)
         await state.set_state(Gen().typing_telegram_id)
 
 
@@ -59,7 +58,7 @@ async def get_telegram_id(msg: Message, state: FSMContext):
 
 @router.message(Gen.typing_limit)
 async def get_limit(msg: Message, state: FSMContext):
-    if msg.from_user.id == admin_id:
+    if msg.from_user.username == admin_id:
         limit = msg.text
         if not limit.isnumeric():
             await state.clear()
@@ -69,7 +68,6 @@ async def get_limit(msg: Message, state: FSMContext):
             user_data = await state.get_data()
             tg_id = user_data['chosen_id']
             User().create(user_id=tg_id, limit=limit)
-            await msg.answer(text.user_is_created, reply_markup=kb.iexit_kb)
             await state.clear()
 
 
@@ -84,8 +82,12 @@ async def add_client(clbck: CallbackQuery, state: FSMContext):
 async def delete_telegram_id(msg: Message, state: FSMContext):
     if msg.from_user.username == admin_id:
         tg_id = msg.text
-        User().delete(user_id=tg_id)
-        await state.clear()
+        if not tg_id.isnumeric() or len(tg_id) != 9:
+            await state.clear()
+            return await msg.answer(text.telegram_id_error, reply_markup=kb.iexit_kb)
+        else:
+            User().delete(user_id=tg_id)
+            await state.clear()
 
 
 @router.callback_query(F.data == "create_config")
@@ -138,22 +140,3 @@ async def add_config(clbck: CallbackQuery):
         uri = client.conn_str
         await clbck.message.answer(text=uri)
 
-
-@router.callback_query(F.data == "instruction_ios")
-async def get_ios_instruction(clbck: CallbackQuery):
-    await clbck.message.answer(text=text.instruction_ios, reply_markup=kb.iexit_kb)
-
-
-@router.callback_query(F.data == "instruction_android")
-async def get_android_instruction(clbck: CallbackQuery):
-    await clbck.message.answer(text=text.instruction_android, reply_markup=kb.iexit_kb)
-
-
-@router.callback_query(F.data == "instruction_macos")
-async def get_macos_instruction(clbck: CallbackQuery):
-    await clbck.message.answer(text=text.instruction_macos, reply_markup=kb.iexit_kb)
-
-
-@router.callback_query(F.data == "instruction_windows")
-async def get_windows_instruction(clbck: CallbackQuery):
-    await clbck.message.answer(text=text.instruction_windows, reply_markup=kb.iexit_kb)
