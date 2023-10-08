@@ -16,6 +16,7 @@ from src.presentation.states import Gen, Del, GenConf, DelConf
 router = Router()
 admin_id = getenv("ADMIN_TELEGRAM_ID")
 
+
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
     await state.clear()
@@ -156,4 +157,3 @@ async def get_macos_instruction(clbck: CallbackQuery):
 @router.callback_query(F.data == "instruction_windows")
 async def get_windows_instruction(clbck: CallbackQuery):
     await clbck.message.answer(text=text.instruction_windows, reply_markup=kb.iexit_kb)
-

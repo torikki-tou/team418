@@ -28,19 +28,3 @@ client_menu = InlineKeyboardMarkup(inline_keyboard=client_menu)
 instruction_menu = InlineKeyboardMarkup(inline_keyboard=instruction_menu)
 
 iexit_kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="◀️ Выйти в меню", callback_data="main_menu")]])
-
-
-# def make_config_list(user_id: str) -> InlineKeyboardMarkup:
-#     builder = InlineKeyboardBuilder()
-#     client_ids = Client().get_by_user(user_id)
-#     for client_id in client_ids:
-#         builder.button(text=client_id, callback_data=cd_conf.)
-#     return builder.as_markup()
-#
-#
-# def make_handlers_list(user_id: str) -> list:
-#
-#     callbacks = []
-#     for client_id in client_ids:
-#         callbacks.append(f"btn_{client_id}")
-#     return callbacks
