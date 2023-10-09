@@ -75,7 +75,7 @@ function check_inbounds_table() {
     if [[ -f "$db_path" ]]; then
         table_exists=$(sqlite3 "$db_path" "SELECT name FROM sqlite_master WHERE type='table' AND name='inbounds';")
         if [[ $table_exists == "inbounds" ]]; then
-            read -p "The 'inbounds' table already exists. \033[32mOn first run it's empty, you can safely continue.\033[0m Do you want to overwrite existing 3X-UI config? (y/n): " response
+            read -p "The 'inbounds' table already exists. {\033[32mOn} first run it's empty, you can safely continue.{\033[0m} Do you want to overwrite existing 3X-UI config? (y/n): " response
             if [[ $response == "y" ]]; then
                 ./inbounds_gen.sh
 		sqlite3 $db_path < inbounds.sql
