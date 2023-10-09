@@ -75,7 +75,7 @@ function check_inbounds_table() {
     if [[ -f "$db_path" ]]; then
         table_exists=$(sqlite3 "$db_path" "SELECT name FROM sqlite_master WHERE type='table' AND name='inbounds';")
         if [[ $table_exists == "inbounds" ]]; then
-            read -p "The 'inbounds' table already exists. Do you want to proceed with the execution of inbounds_gen.sh? (y/n): " response
+            read -p "The 'inbounds' table already exists. On first run it's empty, you can safely continue. Do you want to proceed with the execution of inbounds_gen.sh? (y/n): " response
             if [[ $response == "y" ]]; then
                 ./inbounds_gen.sh
 		sqlite3 $db_path < inbounds.sql
