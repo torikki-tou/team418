@@ -57,7 +57,7 @@ function install_docker() {
     chmod a+r /etc/apt/keyrings/docker.gpg
     apt-get update
     apt-get install -y "${packages[@]}"
-	echo -e "Docker packages were installed"
+	echo -e "\e[34mDocker packages were installed\e[0m"
 }
 
 #Check for unzip package installed
@@ -79,7 +79,7 @@ function check_inbounds_table() {
             if [[ $response == "y" ]]; then
                 ./inbounds_gen.sh
 		sqlite3 $db_path < inbounds.sql
-		echo -e "Added XTLS-Reality config entry into x-ui.db database"
+                echo -e "\e[34mAdded XTLS-Reality config entry into x-ui.db database\e[0m"
             else
                 echo "Skipping execution of inbounds_gen.sh."
             fi
@@ -104,7 +104,7 @@ function clone_repo() {
         unzip main.zip
         mv team418-main/* .
         rm -rf team418-main main.zip
-		echo -e "team_418 repo has been cloned"
+		echo -e "\e[34m team418 repository has been cloned\e[0m"
     else
         wget https://github.com/torikki-tou/team418/archive/refs/heads/main.zip
         unzip main.zip
@@ -112,7 +112,7 @@ function clone_repo() {
         mv team418-main/* team_418/
         cd team_418 || exit
         rm -rf ../team418-main ../testing.zip
-		echo -e "team_418 repo has been cloned"
+		echo -e "\e[34m team418 repository has been cloned\e[0m"
     fi
 }
 
@@ -130,10 +130,10 @@ check_sqlite3
 echo -e "Checking for Docker packages installed...."
 check_docker
 if [[ $? -ne 0 ]]; then
-    read -p "Docker components are missing, would you like to install them? (y/n): " response
+    read -p "Docker components are missing, would you like to install them? (y/n) (If not, you would have to install them manually) : " response
     if [[ $response == "y" ]]; then
         install_docker
-		echo -e "Docker packages installed..."
+		echo -e "\e[34mDocker packages were installed\e[0m"
     else
         echo "Aborting"
         exit 1
@@ -143,8 +143,8 @@ fi
 #Checks for unzip package
 echo -e "Checking for unzip package installed...."
 check_unzip
-#Clones team418 repo (testing branch)
-echo -e "Cloning team_418 repo (testing branch)..."
+#Clones team418 repo
+echo -e "Cloning team_418 repository from Github..."
 clone_repo
 chmod +x inbounds_gen.sh
 
@@ -170,7 +170,7 @@ function check_all_variables() {
 
 # Check if all variables exist in .env
 if check_all_variables; then
-    read -p "Variables already exist in .env. Do you want to reinstall admin panel? (y/n): " response
+    read -p "Variables already exist in .env. Do you want to reinstall admin panel from scratch? (y/n): " response
     if [[ $response != "y" ]]; then
         echo "Aborting."
         exit 0
@@ -187,9 +187,9 @@ echo -e "
 echo -e "\e[32mWelcome to 3X-UI Docker + Traefik + TelegramBot installation script\e[0m"
 
 read -p "Enter username for 3X-UI Panel: " usernameTemp
-read -p "Enter password: " passwordTemp
+read -p "Enter password (only numbers and letters, no special characters): " passwordTemp
 read -p "Enter port on which 3X-UI web admin panel would be available: " config_port
-read -p "Enter your hostname (WWW or Domain):" hostname_input
+read -p "Enter your hostname (IP or Domain):" hostname_input
 read -p "Enter your e-mail for certificate :" email_input
 read -p "Enter your Telegram bot API token (use Tg BotFather):" tgtoken_input
 read -p "Enter your Telegram admin profile (as @admin without @):" tgadminid_input
