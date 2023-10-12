@@ -11,6 +11,7 @@ from aiogram import flags
 
 import src.presentation.kb as kb
 import src.presentation.text as text
+from src.presentation.callbacks import ClientCallback
 from src.presentation.states import Gen, Del, GenConf, DelConf
 
 router = Router()
@@ -129,14 +130,8 @@ async def delete_config_id(msg: Message, state: FSMContext):
         await msg.answer(text.config_is_deleted, reply_markup=kb.iexit_kb)
 
 
-@router.callback_query(F.data == "conf_list")
-async def add_config(clbck: CallbackQuery):
-    user_id = clbck.from_user.username
-    client_ids = Client().get_by_user(str(user_id))
-    if client_ids is None or not client_ids:
-        return await clbck.message.answer(text=text.configs_not_found)
-    for client_id in client_ids:
-        client = Client().get(client_id)
-        uri = client.conn_str
-        await clbck.message.answer(text=uri)
+@router.callback_query(ClientCallback.filter())
+async def config_list(clbck: CallbackQuery):
+    username = clbck.from_user.username
+    await clbck.message.answer(text="Выбран конфиг ...")
 
