@@ -12,10 +12,11 @@ from aiogram import flags
 import src.presentation.kb as kb
 import src.presentation.text as text
 from src.presentation.callbacks import ClientCallback
-from src.presentation.states import Gen, Del, GenConf, DelConf
+from src.presentation.states import Gen, Del, GenConf, DelConf, ConfMenu
 
 router = Router()
 admin_id = getenv("ADMIN_TELEGRAM_ID")
+
 
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
@@ -104,34 +105,32 @@ async def add_config(clbck: CallbackQuery):
     await clbck.message.answer(text=uri, reply_markup=kb.iexit_kb)
 
 
-@router.callback_query(F.data == "delete_config")
-async def delete_config(clbck: CallbackQuery, state: FSMContext):
-    user_id = str(clbck.from_user.username)
-    if User().get(user_id) is None:
-        return await clbck.message.answer(text.user_not_defined, reply_markup=kb.iexit_kb)
-    if not User().allowed_to_create_client(user_id):
-        return await clbck.message.answer(text.user_limit_exited, reply_markup=kb.iexit_kb)
-    await clbck.message.answer(text.config_id_await, reply_markup=kb.iexit_kb)
-    await state.set_state(DelConf().typing_conf_id)
-
-
-@router.message(DelConf.typing_conf_id)
-async def delete_config_id(msg: Message, state: FSMContext):
-    conf_id = msg.text
-    if not conf_id.isalnum():
-        await state.clear()
-        return await msg.answer(text.config_id_error, reply_markup=kb.iexit_kb)
-    else:
-        client_id = msg.text
-        if Client().get(client_id) is None:
-            return await msg.answer(text.client_not_defined, reply_markup=kb.iexit_kb)
-        Client().delete(client_id=client_id)
-        await state.clear()
-        await msg.answer(text.config_is_deleted, reply_markup=kb.iexit_kb)
+@router.callback_query(F.data == "conf_list")
+async def config_list(clbck: CallbackQuery):
+    username = clbck.from_user.username
+    await clbck.message.answer(text.config_list, reply_markup=kb.create_conf_list(username))
 
 
 @router.callback_query(ClientCallback.filter())
-async def config_list(clbck: CallbackQuery):
-    username = clbck.from_user.username
-    await clbck.message.answer(text="Выбран конфиг ...")
+async def config_menu(clbck: CallbackQuery, clbck_data: ClientCallback, state: FSMContext):
+    client_id = clbck_data.client_id
+    client = Client().get(client_id)
+    await clbck.message.answer(text=f"Выбран конфиг {client.id}", reply_markup=kb.config_sub_menu)
+    await state.set_state(ConfMenu().choosing_action)
+    await state.update_data(client_id=client_id)
 
+
+@router.callback_query(F.data == "get_config")
+async def get_conf(clbck: CallbackQuery, state: FSMContext):
+    client_data = await state.get_data()
+    client_id = client_data['client_id']
+    client = Client().get(client_id)
+    await clbck.message.answer(text=client.conn_str, reply_markup=kb.iexit_kb)
+
+
+@router.callback_query(F.data == "delete_config")
+async def delete_config(clbck: CallbackQuery, state: FSMContext):
+    client_data = await state.get_data()
+    client_id = client_data['client_id']
+    Client().delete(client_id)
+    await clbck.message.answer(text=text.config_is_deleted, reply_markup=kb.iexit_kb)

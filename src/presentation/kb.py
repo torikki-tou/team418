@@ -12,10 +12,9 @@ admin_menu = [
 ]
 
 client_menu = [
-    [InlineKeyboardButton(text="📃 Мои конфигурации", callback_data="conf_list"),
-     InlineKeyboardButton(text="🔧 Запросить конфигурацию", callback_data="create_config")],
-    [InlineKeyboardButton(text="❌ Удалить Конфигурацию", callback_data="delete_config"),
-     InlineKeyboardButton(text="🔍 Инструкции", callback_data="get_instructions")]
+    [InlineKeyboardButton(text="📃 Мои конфигурации", callback_data="conf_list")],
+    [InlineKeyboardButton(text="🔧 Запросить конфигурацию", callback_data="create_config")],
+    [InlineKeyboardButton(text="🔍 Инструкции", callback_data="get_instructions")]
 ]
 instruction_menu = [
     [InlineKeyboardButton(text="iOS", callback_data="instruction_ios"),

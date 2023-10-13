@@ -16,3 +16,7 @@ class GenConf(StatesGroup):
 
 class DelConf(StatesGroup):
     typing_conf_id = State()
+
+
+class ConfMenu(StatesGroup):
+    choosing_action = State()
