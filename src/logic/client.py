@@ -50,9 +50,9 @@ class Client:
 
         return ClientDTO(**{'id': db_client.id, 'conn_str': conn_str})
 
-    def create(self, user_id: str) -> str:
+    def create(self, user_id: Optional[str] = None, comment: Optional[str] = None) -> str:
         client_id = self.xui.create_client(user_id)
-        self.client_repo.create(client_id, user_id)
+        self.client_repo.create(client_id, user_id, comment)
         return client_id
 
     def delete(self, client_id: str) -> bool:

@@ -36,12 +36,14 @@ class ClientConfig:
 
         return ClientDTO(**{'id': res[0], 'user_id': res[1]})
 
-    def create(self, client_id: str, user_id: str) -> None:
+    def create(self, client_id: str, user_id: Optional[str], comment: Optional[str]) -> None:
         query = '''
-        INSERT OR REPLACE INTO clients VALUES (?, ?)
+        INSERT OR REPLACE INTO clients VALUES (?, ?, ?)
         '''
 
-        self.__con.cursor().execute(query, (client_id, user_id))
+        self.__con.cursor().execute(query, (
+            client_id, user_id, comment
+        ))
 
         self.__con.commit()
         return
@@ -61,7 +63,8 @@ class ClientConfig:
             '''
             CREATE TABLE IF NOT EXISTS clients (
                 ID      TEXT PRIMARY KEY NOT NULL, 
-                USER_ID TEXT             NOT NULL
+                USER_ID TEXT
+                COMMENT TEXT
                 );
             '''
         )
