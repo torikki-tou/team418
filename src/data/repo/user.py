@@ -10,12 +10,15 @@ class User:
         self.__create_user_table()
         return
 
-    def get_all(self) -> List[UserDTO]:
+    def get_many(self, offset: int = 0, limit: int = 20) -> List[UserDTO]:
         query = '''
-        SELECT * FROM users
+        SELECT * FROM users OFFSET ? LIMIT ?
         '''
 
-        res = self.__con.cursor().execute(query).fetchall()
+        res = self.__con.cursor().execute(
+            query,
+            (offset, limit)
+        ).fetchall()
 
         return [UserDTO(**{'id': e[0], 'limit': e[1]}) for e in res]
 

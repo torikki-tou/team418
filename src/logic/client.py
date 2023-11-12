@@ -15,8 +15,8 @@ class Client:
         self.xui = XUIClient()
         return
 
-    def get_by_user(self, user_id: str) -> List[str]:
-        return [cnf.id for cnf in self.client_repo.get_by_user(user_id)]
+    def get_by_user(self, user_id: str, offset: int = 0, limit: int = 20) -> List[str]:
+        return [cnf.id for cnf in self.client_repo.get_by_user(user_id, offset, limit)]
 
     def get(self, client_id: str) -> Optional[ClientDTO]:
         db_client = self.client_repo.get(client_id)

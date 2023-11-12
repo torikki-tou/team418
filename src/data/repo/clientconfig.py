@@ -10,14 +10,14 @@ class ClientConfig:
         self.__create_clients_table()
         return
 
-    def get_by_user(self, user_id: str) -> List[ClientDTO]:
+    def get_by_user(self, user_id: Optional[str], offset: int = 0, limit: int = 20) -> List[ClientDTO]:
         query = '''
-        SELECT * FROM clients WHERE user_id = ?
+        SELECT * FROM clients WHERE user_id = ? OFFSET ? LIMIT ?
         '''
 
         res = self.__con.cursor().execute(
             query,
-            (user_id,)
+            (user_id, offset, limit)
         ).fetchall()
 
         return [ClientDTO(**{'id': e[0], 'user_id': e[1]}) for e in res]

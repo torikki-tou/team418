@@ -11,8 +11,8 @@ class User:
         self.client_repo = ClientRepo()
         return
 
-    def get_all(self) -> List[UserDTO]:
-        return self.user_repo.get_all()
+    def get_many(self, offset: int = 0, limit: int = 20) -> List[UserDTO]:
+        return self.user_repo.get_many(offset, limit)
 
     def allowed_to_create_client(self, user_id: str) -> bool:
         user = self.user_repo.get(user_id)
