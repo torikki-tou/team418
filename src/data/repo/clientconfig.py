@@ -22,6 +22,18 @@ class ClientConfig:
 
         return [ClientDTO(**{'id': e[0], 'user_id': e[1]}) for e in res]
 
+    def count_by_user(self, user_id: Optional[str]) -> int:
+        query = '''
+        SELECT count(*) FROM clients WHERE user_id = ?
+        '''
+
+        res = self.__con.cursor().execute(
+            query,
+            (user_id,)
+        ).fetchone()
+
+        return res[0]
+
     def get(self, client_id: str) -> Optional[ClientDTO]:
         query = '''
         SELECT * FROM clients WHERE id = ?

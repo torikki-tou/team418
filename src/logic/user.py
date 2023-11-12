@@ -19,8 +19,7 @@ class User:
         if user is None:
             return False
 
-        clients = self.client_repo.get_by_user(user_id)
-        return len(clients) < user.limit
+        return self.client_repo.count_by_user(user_id) < user.limit
 
     def get(self, user_id: str) -> Optional[UserDTO]:
         return self.user_repo.get(user_id)
