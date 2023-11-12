@@ -67,7 +67,8 @@ class EnvConfig:
 
     def __read_admins_ids(self):
         admins_ids: str = os.environ.get('') or ''
-        self.__admins_ids: List[str] = admins_ids.split(',') or []
+        self.__admins_ids: List[str] = [admin_id.strip('@') for admin_id in
+                                        (admins_ids.split(',') or [])]
 
     def __read_chat_ids(self):
         chat_ids: str = os.environ.get('') or ''
