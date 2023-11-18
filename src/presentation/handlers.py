@@ -106,18 +106,30 @@ async def add_config(clbck: CallbackQuery):
 
 
 @router.callback_query(F.data == "conf_list")
-async def config_list(clbck: CallbackQuery):
-    username = clbck.from_user.username
-    await clbck.message.answer(text.config_list, reply_markup=kb.create_conf_list(username))
+async def config_list(clbck: kb.PageCallbackFactory):
+    await kb.show_items_page(clbck)
 
 
-@router.callback_query(ClientCallback.filter())
-async def config_menu(clbck: CallbackQuery, clbck_data: ClientCallback, state: FSMContext):
-    client_id = clbck_data.client_id
-    client = Client().get(client_id)
-    await clbck.message.answer(text=f"Выбран конфиг {client.id}", reply_markup=kb.config_sub_menu)
-    await state.set_state(ConfMenu().choosing_action)
-    await state.update_data(client_id=client_id)
+@router.callback_query(kb.PageCallbackFactory.filter(F.action.in_(["prev", "next"])))
+async def query_page(callback_query: kb.PageCallbackFactory, callback_data: kb.PageCallbackFactory):
+    current_page = int(callback_data.page)
+    action = callback_data.action
+    if action == "prev":
+        page = current_page - 1
+    elif action == "next":
+        page = current_page + 1
+    else:
+        page = current_page
+    if page != current_page:
+        await kb.show_items_page(callback_query, page)
+    else:
+        await callback_query.answer('Вы уже на этой странице!')
+
+
+@router.callback_query(kb.EmailCallbackFactory.filter())
+async def query_item(callback_query: CallbackQuery, callback_data: kb.EmailCallbackFactory):
+    email = callback_data.email
+    await callback_query.message.answer(Client().get(email).conn_str)
 
 
 @router.callback_query(F.data == "get_config")
